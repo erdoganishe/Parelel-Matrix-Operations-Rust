@@ -1,3 +1,6 @@
+extern crate rayon;
+
+use rayon::prelude::*;
 use rand::Rng;
 
 #[derive(Debug, Clone)]
@@ -121,27 +124,86 @@ pub mod Parallel {
     use super::*;
 
     pub fn multiply(matrix1: &Matrix, matrix2: &Matrix) -> Matrix {
-        // Реалізація паралельного множення
+        assert_eq!(matrix1.size, matrix2.size, "Matrix sizes must match for parallel multiplication");
 
-        unimplemented!()
+        let size = matrix1.size;
+        let mut result_data = vec![vec![0.0; size]; size];
+
+        result_data.par_iter_mut().enumerate().for_each(|(i, row)| {
+            for j in 0..size {
+                let mut sum = 0.0;
+                for k in 0..size {
+                    sum += matrix1.get(i, k).unwrap() * matrix2.get(k, j).unwrap();
+                }
+                row[j] = sum;
+            }
+        });
+
+        Matrix {
+            data: result_data,
+            size,
+        }
     }
+    
 
     pub fn addition(matrix1: &Matrix, matrix2: &Matrix) -> Matrix {
-        // Реалізація паралельного множення
+        assert_eq!(matrix1.size, matrix2.size, "Matrix sizes must match for parallel addition");
 
-        unimplemented!()
+        let size = matrix1.size;
+        let mut result_data = vec![vec![0.0; size]; size];
+
+        result_data.par_iter_mut().enumerate().for_each(|(i, row)| {
+            for j in 0..size {
+                row[j] = matrix1.get(i, j).unwrap() + matrix2.get(i, j).unwrap();
+            }
+        });
+
+        Matrix {
+            data: result_data,
+            size,
+        }
     }
 
     pub fn bit_multiply(matrix1: &BitMatrix, matrix2: &BitMatrix) -> BitMatrix {
-        // Реалізація паралельного множення
 
-        unimplemented!()
+
+        assert_eq!(matrix1.size, matrix2.size, "BitMatrix sizes must match for bit multiplication");
+
+        let size = matrix1.size;
+        let mut result_data = vec![vec![false; size]; size];
+
+        result_data.par_iter_mut().enumerate().for_each(|(i, row)| {
+            for j in 0..size {
+                let mut sum = false;
+                for k in 0..size {
+                    sum ^= matrix1.get(i, k).unwrap() && matrix2.get(k, j).unwrap();
+                }
+                row[j] = sum;
+            }
+        });
+
+        BitMatrix {
+            data: result_data,
+            size,
+        }
     }
 
     pub fn bit_addition(matrix1: &BitMatrix, matrix2: &BitMatrix) -> BitMatrix {
-        // Реалізація паралельного множення
+        assert_eq!(matrix1.size, matrix2.size, "BitMatrix sizes must match for parallel bit addition");
 
-        unimplemented!()
+        let size = matrix1.size;
+        let mut result_data = vec![vec![false; size]; size];
+
+        result_data.par_iter_mut().enumerate().for_each(|(i, row)| {
+            for j in 0..size {
+                row[j] = matrix1.get(i, j).unwrap() ^ matrix2.get(i, j).unwrap();
+            }
+        });
+
+        BitMatrix {
+            data: result_data,
+            size,
+        }
     }
 
 }
@@ -150,7 +212,7 @@ pub mod NonParallel {
     use super::*;
 
     pub fn multiply(matrix1: &Matrix, matrix2: &Matrix) -> Matrix {
-        // Реалізація непаралельного множення
+        
         assert_eq!(matrix1.size, matrix2.size, "Matrix sizes must match for multiplication");
 
         let size = matrix1.size;

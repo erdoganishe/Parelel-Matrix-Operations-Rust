@@ -1,0 +1,1 @@
+Fold<rayon::iter::Map<rayon::range::Iter<usize>, [closure@src\matrix.rs:247:26: 247:29]>, [closure@src\matrix.rs:248:27: 248:29], [closure@src\matrix.rs:248:37: 248:47]>
